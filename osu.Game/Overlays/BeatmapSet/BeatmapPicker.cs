@@ -21,6 +21,7 @@ using osu.Game.Graphics.Sprites;
 using osu.Game.Online.API.Requests.Responses;
 using osu.Game.Resources.Localisation.Web;
 using osu.Game.Rulesets;
+using osu.Game.Users;
 using osuTK;
 
 namespace osu.Game.Overlays.BeatmapSet
@@ -33,7 +34,8 @@ namespace osu.Game.Overlays.BeatmapSet
         private readonly OsuSpriteText version, starRating, starRatingText;
         private readonly LinkFlowContainer guestMapperContainer;
         private readonly FillFlowContainer starRatingContainer;
-        private readonly Statistic plays, favourites;
+        private readonly Statistic plays;
+        public readonly FavouriteStatisticHolder Favourites;
 
         public readonly DifficultiesContainer Difficulties;
 
@@ -56,7 +58,6 @@ namespace osu.Game.Overlays.BeatmapSet
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
-
             Children = new Drawable[]
             {
                 new FillFlowContainer
@@ -131,10 +132,10 @@ namespace osu.Game.Overlays.BeatmapSet
                             AutoSizeAxes = Axes.Y,
                             Spacing = new Vector2(10f),
                             Margin = new MarginPadding { Top = 5 },
-                            Children = new[]
+                            Children = new Drawable[]
                             {
                                 plays = new Statistic(FontAwesome.Solid.PlayCircle),
-                                favourites = new Statistic(FontAwesome.Solid.Heart),
+                                Favourites = new FavouriteStatisticHolder(),
                             },
                         },
                     },
@@ -202,8 +203,8 @@ namespace osu.Game.Overlays.BeatmapSet
             Beatmap.Value ??= Difficulties.FirstOrDefault()?.Beatmap;
 
             plays.Value = BeatmapSet?.PlayCount ?? 0;
-            favourites.Value = BeatmapSet?.FavouriteCount ?? 0;
-
+            Favourites.FavouriteCount = BeatmapSet?.FavouriteCount ?? 0;
+            Favourites.Users = BeatmapSet?.RecentFavourites ?? Array.Empty<APIUser>();
             updateDifficultyButtons();
         }
 
@@ -346,6 +347,71 @@ namespace osu.Game.Overlays.BeatmapSet
             }
         }
 
+        public partial class FavouriteStatisticHolder : Container
+        {
+            public int FavouriteCount
+            {
+                set => favourites.Value = value;
+            }
+
+            public APIUser[] Users
+            {
+                set => ListPanel.UpdateUsers(value.ToList());
+            }
+
+            public UserRecentFavouritedListPanel ListPanel { get; }
+
+            private readonly Statistic favourites;
+            private readonly Container content;
+            private readonly Box background;
+
+            protected override Container<Drawable> Content => content;
+
+            public FavouriteStatisticHolder()
+            {
+                ListPanel = new UserRecentFavouritedListPanel();
+                Masking = true;
+                AutoSizeAxes = Axes.Both;
+                CornerRadius = 5f;
+                InternalChildren = new Drawable[]
+                {
+                    background = new Box
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Alpha = 0.3f
+                    },
+                    content = new Container
+                    {
+                        AutoSizeAxes = Axes.Both,
+                    }
+                };
+                Child = favourites = new Statistic(FontAwesome.Solid.Heart);
+            }
+
+            [BackgroundDependencyLoader]
+            private void load(OverlayColourProvider colourProvider)
+            {
+                background.Colour = colourProvider.Background6;
+            }
+
+            protected override bool OnHover(HoverEvent e)
+            {
+                ListPanel.IsTargetHovered = true;
+                background.FadeTo(0.8f, 500, Easing.OutQuint);
+                ListPanel.Position = new Vector2(Position.X + Width * 2.5f, Position.Y + Height);
+                ListPanel.Show();
+
+                return base.OnHover(e);
+            }
+
+            protected override void OnHoverLost(HoverLostEvent e)
+            {
+                ListPanel.IsTargetHovered = false;
+                background.FadeTo(0.3f, 500, Easing.OutQuint);
+                base.OnHoverLost(e);
+            }
+        }
+
         private partial class Statistic : FillFlowContainer
         {
             private readonly OsuSpriteText text;
@@ -364,9 +430,10 @@ namespace osu.Game.Overlays.BeatmapSet
 
             public Statistic(IconUsage icon)
             {
-                AutoSizeAxes = Axes.Both;
                 Direction = FillDirection.Horizontal;
+                AutoSizeAxes = Axes.Both;
                 Spacing = new Vector2(2f);
+                Padding = new MarginPadding { Horizontal = 4, Vertical = 3 };
 
                 Children = new Drawable[]
                 {
