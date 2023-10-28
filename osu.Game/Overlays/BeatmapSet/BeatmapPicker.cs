@@ -33,7 +33,8 @@ namespace osu.Game.Overlays.BeatmapSet
         private readonly OsuSpriteText version, starRating, starRatingText;
         private readonly LinkFlowContainer guestMapperContainer;
         private readonly FillFlowContainer starRatingContainer;
-        private readonly Statistic plays, favourites;
+        private readonly Statistic plays;
+        private readonly FavouriteStatistic favourites;
 
         public readonly DifficultiesContainer Difficulties;
 
@@ -90,13 +91,13 @@ namespace osu.Game.Overlays.BeatmapSet
                                     Font = OsuFont.GetFont(size: 17, weight: FontWeight.Bold)
                                 },
                                 guestMapperContainer = new LinkFlowContainer(s =>
-                                    s.Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 11))
-                                {
-                                    AutoSizeAxes = Axes.Both,
-                                    Anchor = Anchor.BottomLeft,
-                                    Origin = Anchor.BottomLeft,
-                                    Margin = new MarginPadding { Bottom = 1 },
-                                },
+                                        s.Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 11))
+                                    {
+                                        AutoSizeAxes = Axes.Both,
+                                        Anchor = Anchor.BottomLeft,
+                                        Origin = Anchor.BottomLeft,
+                                        Margin = new MarginPadding { Bottom = 1 },
+                                    },
                                 starRatingContainer = new FillFlowContainer
                                 {
                                     Anchor = Anchor.BottomLeft,
@@ -131,10 +132,10 @@ namespace osu.Game.Overlays.BeatmapSet
                             AutoSizeAxes = Axes.Y,
                             Spacing = new Vector2(10f),
                             Margin = new MarginPadding { Top = 5 },
-                            Children = new[]
+                            Children = new Drawable[]
                             {
-                                plays = new Statistic(FontAwesome.Solid.PlayCircle),
-                                favourites = new Statistic(FontAwesome.Solid.Heart),
+                                plays = new Statistic(FontAwesome.Solid.Angry),
+                                favourites = new FavouriteStatistic(FontAwesome.Solid.Heart)
                             },
                         },
                     },
@@ -385,6 +386,25 @@ namespace osu.Game.Overlays.BeatmapSet
                         Font = OsuFont.GetFont(size: 12, weight: FontWeight.SemiBold, italics: true),
                     },
                 };
+            }
+        }
+
+        private partial class FavouriteStatistic : Statistic
+        {
+
+            public FavouriteStatistic(IconUsage icon)
+                : base(icon)
+            {
+            }
+
+            protected override bool OnHover(HoverEvent e)
+            {
+                return base.OnHover(e);
+            }
+
+            protected override void OnHoverLost(HoverLostEvent e)
+            {
+                base.OnHoverLost(e);
             }
         }
 
