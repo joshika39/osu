@@ -34,7 +34,7 @@ namespace osu.Game.Overlays.BeatmapSet
         private readonly LinkFlowContainer guestMapperContainer;
         private readonly FillFlowContainer starRatingContainer;
         private readonly Statistic plays;
-        private readonly FavouriteStatistic favourites;
+        private readonly Statistic favourites;
 
         public readonly DifficultiesContainer Difficulties;
 
@@ -135,7 +135,10 @@ namespace osu.Game.Overlays.BeatmapSet
                             Children = new Drawable[]
                             {
                                 plays = new Statistic(FontAwesome.Solid.Angry),
-                                favourites = new FavouriteStatistic(FontAwesome.Solid.Heart)
+                                new DetailBox
+                                {
+                                    Child = favourites = new Statistic(FontAwesome.Solid.Heart)
+                                }
                             },
                         },
                     },
@@ -347,6 +350,51 @@ namespace osu.Game.Overlays.BeatmapSet
             }
         }
 
+        private partial class DetailBox : Container
+        {
+            private readonly Container content;
+            private readonly Box background;
+
+            protected override Container<Drawable> Content => content;
+
+            public DetailBox()
+            {
+                Masking = true;
+                AutoSizeAxes = Axes.Both;
+                CornerRadius = 5f;
+                InternalChildren = new Drawable[]
+                {
+                    background = new Box
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Alpha = 0.3f
+                    },
+                    content = new Container
+                    {
+                        AutoSizeAxes = Axes.Both,
+                    },
+                };
+            }
+
+            [BackgroundDependencyLoader]
+            private void load(OverlayColourProvider colourProvider)
+            {
+                background.Colour = colourProvider.Background6;
+            }
+
+            protected override bool OnHover(HoverEvent e)
+            {
+                background.FadeTo(0.8f, 500, Easing.OutQuint);
+                return base.OnHover(e);
+            }
+
+            protected override void OnHoverLost(HoverLostEvent e)
+            {
+                background.FadeTo(0.3f, 500, Easing.OutQuint);
+                base.OnHoverLost(e);
+            }
+        }
+
         private partial class Statistic : FillFlowContainer
         {
             private readonly OsuSpriteText text;
@@ -365,9 +413,10 @@ namespace osu.Game.Overlays.BeatmapSet
 
             public Statistic(IconUsage icon)
             {
-                AutoSizeAxes = Axes.Both;
                 Direction = FillDirection.Horizontal;
+                AutoSizeAxes = Axes.Both;
                 Spacing = new Vector2(2f);
+                Padding = new MarginPadding { Horizontal = 4, Vertical = 3 };
 
                 Children = new Drawable[]
                 {
@@ -386,25 +435,6 @@ namespace osu.Game.Overlays.BeatmapSet
                         Font = OsuFont.GetFont(size: 12, weight: FontWeight.SemiBold, italics: true),
                     },
                 };
-            }
-        }
-
-        private partial class FavouriteStatistic : Statistic
-        {
-
-            public FavouriteStatistic(IconUsage icon)
-                : base(icon)
-            {
-            }
-
-            protected override bool OnHover(HoverEvent e)
-            {
-                return base.OnHover(e);
-            }
-
-            protected override void OnHoverLost(HoverLostEvent e)
-            {
-                base.OnHoverLost(e);
             }
         }
 
