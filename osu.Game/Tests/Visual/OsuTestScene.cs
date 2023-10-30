@@ -306,6 +306,17 @@ namespace osu.Game.Tests.Visual
                         StarRating = original.StarRating,
                         DifficultyName = original.DifficultyName,
                     }
+                },
+                FavouriteCount = 1,
+                RecentFavourites = new[]
+                {
+                    new APIUser()
+                    {
+                        Id = 2,
+                        Username = "peppy",
+                        AvatarUrl = $@"https://a.ppy.sh/2",
+                        CoverUrl = "https://osu.ppy.sh/images/headers/profile-covers/c3.jpg",
+                    }
                 }
             };
 
