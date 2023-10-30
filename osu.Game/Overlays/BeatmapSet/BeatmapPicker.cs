@@ -388,6 +388,7 @@ namespace osu.Game.Overlays.BeatmapSet
 
             protected override bool OnHover(HoverEvent e)
             {
+                list.IsTargetHovered = true;
                 background.FadeTo(0.8f, 500, Easing.OutQuint);
                 list.Position = e.MousePosition;
                 list.Show();
@@ -396,6 +397,7 @@ namespace osu.Game.Overlays.BeatmapSet
 
             protected override void OnHoverLost(HoverLostEvent e)
             {
+                list.IsTargetHovered = false;
                 background.FadeTo(0.3f, 500, Easing.OutQuint);
                 base.OnHoverLost(e);
             }
