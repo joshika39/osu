@@ -18,7 +18,20 @@ namespace osu.Game.Users
 {
     public partial class UserSquareList : VisibilityContainer
     {
-        private UsersList usersList = new UsersList();
+        private readonly UsersList usersList = new UsersList();
+        public bool IsTargetHovered
+        {
+            get => isTargetHovered;
+            set
+            {
+                isTargetHovered = value;
+
+                if (!isTargetHovered)
+                {
+                    schedulePopOut();
+                }
+            }
+        }
         public List<APIUser>? Users
         {
             get => users;
@@ -60,6 +73,7 @@ namespace osu.Game.Users
 
         private ScheduledDelegate? popOutDelegate;
         private List<APIUser>? users;
+        private bool isTargetHovered;
 
         protected override void PopOut()
         {
@@ -76,8 +90,7 @@ namespace osu.Game.Users
         [BackgroundDependencyLoader]
         private void load(OsuColour colours)
         {
-            Width = 400;
-            Height = 200;
+            AutoSizeAxes = Axes.Both;
             AutoSizeDuration = 200;
             AutoSizeEasing = Easing.OutQuint;
             Masking = true;
@@ -87,19 +100,11 @@ namespace osu.Game.Users
             {
                 new Box
                 {
-                    Width = 400,
-                    Height = 200,
+                    RelativeSizeAxes = Axes.Both,
                     Alpha = 0.9f,
                     Colour = colours.Gray3,
                 },
-                usersList,
-                // new FillFlowContainer()
-                // {
-                //     Margin = new MarginPadding(5),
-                //     Spacing = new Vector2(10),
-                //     AutoSizeAxes = Axes.Both,
-                //     Direction = FillDirection.Vertical
-                // }
+                usersList
             });
         }
 
@@ -114,8 +119,10 @@ namespace osu.Game.Users
             popOutDelegate?.Cancel();
             this.Delay(1000).Schedule(() =>
             {
-                if (!IsHovered)
+                if (!IsHovered && !IsTargetHovered)
+                {
                     Hide();
+                }
             }, out popOutDelegate);
         }
 
@@ -125,20 +132,24 @@ namespace osu.Game.Users
             {
                 var avatars = users.Select(u => new UpdateableAvatar(u).With(avatar =>
                 {
-                    avatar.Anchor = Anchor.CentreLeft;
-                    avatar.Origin = Anchor.CentreLeft;
-                    avatar.Size = new Vector2(40);
-                })).ToArray();
+                    avatar.Anchor = Anchor.TopLeft;
+                    avatar.Origin = Anchor.TopLeft;
+                    avatar.Size = new Vector2(30);
+                    avatar.CornerRadius = 5;
+                    avatar.Masking = true;
+                })).Take(50).ToArray();
                 Children = avatars;
             }
 
             public UsersList()
             {
-                Anchor = Anchor.CentreLeft;
-                Origin = Anchor.CentreLeft;
-                AutoSizeAxes = Axes.Both;
-                Direction = FillDirection.Horizontal;
-                Spacing = new Vector2(10, 0);
+                Anchor = Anchor.TopLeft;
+                Origin = Anchor.TopLeft;
+                Width = 323;
+                AutoSizeAxes = Axes.Y;
+                Direction = FillDirection.Full;
+                Spacing = new Vector2(2, 2);
+                Padding = new MarginPadding(2);
             }
         }
     }
