@@ -100,7 +100,7 @@ namespace osu.Game.Tests.Visual.Online
                                 Retries = Enumerable.Range(-2, 100).Select(i => i % 12 - 6).ToArray(),
                             },
                         },
-                    },
+                    }
                 });
             });
 

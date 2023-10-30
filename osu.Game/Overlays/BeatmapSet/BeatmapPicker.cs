@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using osu.Framework;
 using osu.Framework.Allocation;
@@ -21,6 +22,7 @@ using osu.Game.Graphics.Sprites;
 using osu.Game.Online.API.Requests.Responses;
 using osu.Game.Resources.Localisation.Web;
 using osu.Game.Rulesets;
+using osu.Game.Users;
 using osuTK;
 
 namespace osu.Game.Overlays.BeatmapSet
@@ -35,6 +37,7 @@ namespace osu.Game.Overlays.BeatmapSet
         private readonly FillFlowContainer starRatingContainer;
         private readonly Statistic plays;
         private readonly Statistic favourites;
+        private UserSquareList usersList;
 
         public readonly DifficultiesContainer Difficulties;
 
@@ -57,7 +60,8 @@ namespace osu.Game.Overlays.BeatmapSet
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
-
+            favourites = new Statistic(FontAwesome.Solid.Heart);
+            usersList = new UserSquareList();
             Children = new Drawable[]
             {
                 new FillFlowContainer
@@ -135,12 +139,10 @@ namespace osu.Game.Overlays.BeatmapSet
                             Children = new Drawable[]
                             {
                                 plays = new Statistic(FontAwesome.Solid.Angry),
-                                new DetailBox
-                                {
-                                    Child = favourites = new Statistic(FontAwesome.Solid.Heart)
-                                }
+                                new DetailBox(favourites, usersList)
                             },
                         },
+                        usersList
                     },
                 },
             };
@@ -207,7 +209,7 @@ namespace osu.Game.Overlays.BeatmapSet
 
             plays.Value = BeatmapSet?.PlayCount ?? 0;
             favourites.Value = BeatmapSet?.FavouriteCount ?? 0;
-
+            usersList.Users = BeatmapSet?.RecentFavourites?.ToList() ?? new List<APIUser>();
             updateDifficultyButtons();
         }
 
@@ -352,13 +354,14 @@ namespace osu.Game.Overlays.BeatmapSet
 
         private partial class DetailBox : Container
         {
+            private readonly UserSquareList list;
             private readonly Container content;
             private readonly Box background;
-
             protected override Container<Drawable> Content => content;
 
-            public DetailBox()
+            public DetailBox(Statistic statisticContent, UserSquareList list)
             {
+                this.list = list;
                 Masking = true;
                 AutoSizeAxes = Axes.Both;
                 CornerRadius = 5f;
@@ -372,8 +375,9 @@ namespace osu.Game.Overlays.BeatmapSet
                     content = new Container
                     {
                         AutoSizeAxes = Axes.Both,
-                    },
+                    }
                 };
+                Child = statisticContent;
             }
 
             [BackgroundDependencyLoader]
@@ -385,6 +389,8 @@ namespace osu.Game.Overlays.BeatmapSet
             protected override bool OnHover(HoverEvent e)
             {
                 background.FadeTo(0.8f, 500, Easing.OutQuint);
+                list.Position = e.MousePosition;
+                list.Show();
                 return base.OnHover(e);
             }
 
