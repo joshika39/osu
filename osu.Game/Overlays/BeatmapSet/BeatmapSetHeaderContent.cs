@@ -24,6 +24,7 @@ using osu.Game.Online.API;
 using osu.Game.Online.API.Requests.Responses;
 using osu.Game.Online.Chat;
 using osu.Game.Overlays.BeatmapSet.Buttons;
+using osu.Game.Users;
 using osuTK;
 using osuTK.Graphics;
 
@@ -68,6 +69,7 @@ namespace osu.Game.Overlays.BeatmapSet
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
+            var recentFavouritedUsersList = new UserSquareList();
             InternalChild = new Container
             {
                 RelativeSizeAxes = Axes.X,
@@ -113,22 +115,22 @@ namespace osu.Game.Overlays.BeatmapSet
                                     {
                                         RelativeSizeAxes = Axes.X,
                                         AutoSizeAxes = Axes.Y,
-                                        Child = Picker = new BeatmapPicker(),
+                                        Child = Picker = new BeatmapPicker(recentFavouritedUsersList),
                                     },
                                     title = new MetadataFlowContainer(s =>
-                                    {
-                                        s.Font = OsuFont.GetFont(size: 30, weight: FontWeight.SemiBold, italics: true);
-                                    })
-                                    {
-                                        Margin = new MarginPadding { Top = 15 },
-                                    },
+                                        {
+                                            s.Font = OsuFont.GetFont(size: 30, weight: FontWeight.SemiBold, italics: true);
+                                        })
+                                        {
+                                            Margin = new MarginPadding { Top = 15 },
+                                        },
                                     artist = new MetadataFlowContainer(s =>
-                                    {
-                                        s.Font = OsuFont.GetFont(size: 20, weight: FontWeight.Medium, italics: true);
-                                    })
-                                    {
-                                        Margin = new MarginPadding { Bottom = 20 },
-                                    },
+                                        {
+                                            s.Font = OsuFont.GetFont(size: 20, weight: FontWeight.Medium, italics: true);
+                                        })
+                                        {
+                                            Margin = new MarginPadding { Bottom = 20 },
+                                        },
                                     new Container
                                     {
                                         RelativeSizeAxes = Axes.X,
@@ -186,7 +188,8 @@ namespace osu.Game.Overlays.BeatmapSet
                             Details = new Details(),
                         },
                     },
-                }
+                    recentFavouritedUsersList
+                },
             };
 
             Picker.Beatmap.ValueChanged += b =>

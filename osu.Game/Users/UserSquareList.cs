@@ -139,6 +139,7 @@ namespace osu.Game.Users
                     avatar.Masking = true;
                 })).Take(50).ToArray();
                 Children = avatars;
+                Width = users.Count <= 10 ? users.Count * 33 : 323;
             }
 
             public UsersList()

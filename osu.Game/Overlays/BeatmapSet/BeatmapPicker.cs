@@ -56,12 +56,12 @@ namespace osu.Game.Overlays.BeatmapSet
             }
         }
 
-        public BeatmapPicker()
+        public BeatmapPicker(UserSquareList userSquareList)
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
             favourites = new Statistic(FontAwesome.Solid.Heart);
-            usersList = new UserSquareList();
+            usersList = userSquareList;
             Children = new Drawable[]
             {
                 new FillFlowContainer
@@ -142,7 +142,6 @@ namespace osu.Game.Overlays.BeatmapSet
                                 new DetailBox(favourites, usersList)
                             },
                         },
-                        usersList
                     },
                 },
             };
@@ -388,10 +387,13 @@ namespace osu.Game.Overlays.BeatmapSet
 
             protected override bool OnHover(HoverEvent e)
             {
-                list.IsTargetHovered = true;
-                background.FadeTo(0.8f, 500, Easing.OutQuint);
-                list.Position = e.MousePosition;
-                list.Show();
+                if (list.Users?.Count > 0)
+                {
+                    list.IsTargetHovered = true;
+                    background.FadeTo(0.8f, 500, Easing.OutQuint);
+                    list.Position = new Vector2(Position.X + Width * 2.5f, Position.Y + Height);
+                    list.Show();
+                }
                 return base.OnHover(e);
             }
 
