@@ -236,7 +236,7 @@ namespace osu.Game.Tests.Visual.Online
             {
                 var beatmapSet = getBeatmapSet();
                 beatmapSet.FavouriteCount = 5;
-                beatmapSet.RecentFavourites = GenerateDummyApiUsers(beatmapSet.FavouriteCount);
+                beatmapSet.RecentFavourites = generateDummyApiUsers(beatmapSet.FavouriteCount);
                 overlay.ShowBeatmapSet(beatmapSet);
             });
         }
@@ -248,7 +248,7 @@ namespace osu.Game.Tests.Visual.Online
             {
                 var beatmapSet = getBeatmapSet();
                 beatmapSet.FavouriteCount = 25;
-                beatmapSet.RecentFavourites = GenerateDummyApiUsers(beatmapSet.FavouriteCount);
+                beatmapSet.RecentFavourites = generateDummyApiUsers(beatmapSet.FavouriteCount);
                 overlay.ShowBeatmapSet(beatmapSet);
             });
         }
@@ -260,7 +260,7 @@ namespace osu.Game.Tests.Visual.Online
             {
                 var beatmapSet = getBeatmapSet();
                 beatmapSet.FavouriteCount = 65;
-                beatmapSet.RecentFavourites = GenerateDummyApiUsers(beatmapSet.FavouriteCount);
+                beatmapSet.RecentFavourites = generateDummyApiUsers(beatmapSet.FavouriteCount);
                 overlay.ShowBeatmapSet(beatmapSet);
             });
         }
@@ -439,7 +439,7 @@ namespace osu.Game.Tests.Visual.Online
             return set;
         }
 
-        private APIUser[] GenerateDummyApiUsers(int amount)
+        private APIUser[] generateDummyApiUsers(int amount)
         {
             var users = new List<APIUser>();
 

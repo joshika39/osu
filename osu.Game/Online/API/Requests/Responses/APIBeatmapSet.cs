@@ -147,15 +147,15 @@ namespace osu.Game.Online.API.Requests.Responses
         };
 
         #region Implementation of IBeatmapSetInfo
+
         IEnumerable<IBeatmapInfo> IBeatmapSetInfo.Beatmaps => Beatmaps;
-
         IBeatmapMetadataInfo IBeatmapSetInfo.Metadata => metadata;
-
         DateTimeOffset IBeatmapSetInfo.DateAdded => throw new NotImplementedException();
         IEnumerable<INamedFileUsage> IHasNamedFiles.Files => throw new NotImplementedException();
         double IBeatmapSetInfo.MaxStarDifficulty => throw new NotImplementedException();
         double IBeatmapSetInfo.MaxLength => throw new NotImplementedException();
         double IBeatmapSetInfo.MaxBPM => BPM;
+
         #endregion
 
         public bool Equals(IBeatmapSetInfo? other) => other is APIBeatmapSet b && this.MatchesOnlineID(b);

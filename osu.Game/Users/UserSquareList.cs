@@ -1,5 +1,6 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
+
 using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
@@ -21,13 +22,17 @@ namespace osu.Game.Users
     public partial class UserSquareList : VisibilityContainer
     {
         #region Fields
+
         private ScheduledDelegate? popOutDelegate;
         private List<APIUser>? users;
         private bool isTargetHovered;
+
         private readonly UsersList usersList = new UsersList();
+
         #endregion
 
         #region Properties
+
         public bool IsTargetHovered
         {
             get => isTargetHovered;
@@ -51,9 +56,11 @@ namespace osu.Game.Users
                 usersList.UpdateUsers(users ?? new List<APIUser>());
             }
         }
+
         #endregion
 
         #region Protected overrides
+
         protected override bool OnHover(HoverEvent e)
         {
             schedulePopOut();
@@ -85,6 +92,7 @@ namespace osu.Game.Users
             schedulePopOut();
             return base.OnMouseMove(e);
         }
+
         #endregion
 
         public override void Show()
@@ -93,10 +101,12 @@ namespace osu.Game.Users
             {
                 schedulePopOut();
             }
+
             base.Show();
         }
 
         #region Private members
+
         [BackgroundDependencyLoader]
         private void load(OsuColour colours)
         {
@@ -129,6 +139,7 @@ namespace osu.Game.Users
                 }
             }, out popOutDelegate);
         }
+
         #endregion
 
         private partial class UsersList : FillFlowContainer
@@ -148,15 +159,15 @@ namespace osu.Game.Users
 
                 if (users.Count > 50)
                 {
-                    contents.Add(new Container()
+                    contents.Add(new Container
                     {
                         RelativeSizeAxes = Axes.X,
                         AutoSizeAxes = Axes.Y,
-                        Child = new OsuSpriteText()
+                        Child = new OsuSpriteText
                         {
                             Anchor = Anchor.TopRight,
                             Origin = Anchor.TopRight,
-                            Margin = new MarginPadding()
+                            Margin = new MarginPadding
                             {
                                 Right = 4
                             },
@@ -194,16 +205,13 @@ namespace osu.Game.Users
                 Child = displayedUser;
                 this.FadeIn(20, Easing.OutQuint);
             }
+
             protected override void PopOut() => this.FadeOut(80, Easing.OutQuint);
 
             public void Move(Vector2 pos) => Position = pos;
+
             public void SetContent(UserGridPanel userGridPanel)
             {
-                if (displayedUser == userGridPanel)
-                {
-                    return;
-                }
-
                 displayedUser = userGridPanel;
             }
         }
@@ -211,7 +219,7 @@ namespace osu.Game.Users
         private partial class HoverableUserAvatar : OsuClickableContainer, IHasCustomTooltip<UserGridPanel>
         {
             public ITooltip<UserGridPanel> GetCustomTooltip() => new UserGridPanelTooltip();
-            public UserGridPanel? TooltipContent => new UserGridPanel(user!) { Width = 300 };
+            public UserGridPanel TooltipContent => new UserGridPanel(user!) { Width = 300 };
 
             private readonly APIUser? user;
 

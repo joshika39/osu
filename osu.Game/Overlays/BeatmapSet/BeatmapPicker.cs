@@ -37,7 +37,7 @@ namespace osu.Game.Overlays.BeatmapSet
         private readonly FillFlowContainer starRatingContainer;
         private readonly Statistic plays;
         private readonly Statistic favourites;
-        private UserSquareList usersList;
+        private readonly UserSquareList usersList;
 
         public readonly DifficultiesContainer Difficulties;
 
@@ -95,13 +95,13 @@ namespace osu.Game.Overlays.BeatmapSet
                                     Font = OsuFont.GetFont(size: 17, weight: FontWeight.Bold)
                                 },
                                 guestMapperContainer = new LinkFlowContainer(s =>
-                                        s.Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 11))
-                                    {
-                                        AutoSizeAxes = Axes.Both,
-                                        Anchor = Anchor.BottomLeft,
-                                        Origin = Anchor.BottomLeft,
-                                        Margin = new MarginPadding { Bottom = 1 },
-                                    },
+                                    s.Font = OsuFont.GetFont(weight: FontWeight.Bold, size: 11))
+                                {
+                                    AutoSizeAxes = Axes.Both,
+                                    Anchor = Anchor.BottomLeft,
+                                    Origin = Anchor.BottomLeft,
+                                    Margin = new MarginPadding { Bottom = 1 },
+                                },
                                 starRatingContainer = new FillFlowContainer
                                 {
                                     Anchor = Anchor.BottomLeft,
@@ -394,6 +394,7 @@ namespace osu.Game.Overlays.BeatmapSet
                     list.Position = new Vector2(Position.X + Width * 2.5f, Position.Y + Height);
                     list.Show();
                 }
+
                 return base.OnHover(e);
             }
 

@@ -118,19 +118,19 @@ namespace osu.Game.Overlays.BeatmapSet
                                         Child = Picker = new BeatmapPicker(recentFavouritedUsersList),
                                     },
                                     title = new MetadataFlowContainer(s =>
-                                        {
-                                            s.Font = OsuFont.GetFont(size: 30, weight: FontWeight.SemiBold, italics: true);
-                                        })
-                                        {
-                                            Margin = new MarginPadding { Top = 15 },
-                                        },
+                                    {
+                                        s.Font = OsuFont.GetFont(size: 30, weight: FontWeight.SemiBold, italics: true);
+                                    })
+                                    {
+                                        Margin = new MarginPadding { Top = 15 },
+                                    },
                                     artist = new MetadataFlowContainer(s =>
-                                        {
-                                            s.Font = OsuFont.GetFont(size: 20, weight: FontWeight.Medium, italics: true);
-                                        })
-                                        {
-                                            Margin = new MarginPadding { Bottom = 20 },
-                                        },
+                                    {
+                                        s.Font = OsuFont.GetFont(size: 20, weight: FontWeight.Medium, italics: true);
+                                    })
+                                    {
+                                        Margin = new MarginPadding { Bottom = 20 },
+                                    },
                                     new Container
                                     {
                                         RelativeSizeAxes = Axes.X,
