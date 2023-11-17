@@ -83,7 +83,7 @@ namespace osu.Game.Users
             AutoSizeAxes = Axes.Both;
             AutoSizeDuration = 200;
             AutoSizeEasing = Easing.OutQuint;
-            Anchor = Anchor.Centre;
+            Anchor = Anchor.TopLeft;
             Masking = true;
             CornerRadius = 5;
 
@@ -100,7 +100,7 @@ namespace osu.Game.Users
                     Anchor = Anchor.TopLeft,
                     Origin = Anchor.TopLeft,
                     AutoSizeAxes = Axes.Y,
-                    Width = 300,
+                    Width = 50,
                     Direction = FillDirection.Full,
                     Spacing = new Vector2(2, 2),
                     Padding = new MarginPadding(2)
@@ -160,6 +160,8 @@ namespace osu.Game.Users
             if (usersList != null)
             {
                 usersList.Children = contents;
+                float avatarSizeMultiplier = usersList.Children[0].Width + usersList[0].Margin.TotalHorizontal;
+                usersList.Width = users.Length > 5 ? avatarSizeMultiplier * 5 : avatarSizeMultiplier * users.Length;
             }
         }
 

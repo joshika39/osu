@@ -361,10 +361,7 @@ namespace osu.Game.Overlays.BeatmapSet
 
             public FavouriteStatisticHolder()
             {
-                ListPanel = new UserRecentFavouritedListPanel()
-                {
-                    BypassAutoSizeAxes = Axes.Both,
-                };
+                ListPanel = new UserRecentFavouritedListPanel();
                 Masking = true;
                 AutoSizeAxes = Axes.Both;
                 CornerRadius = 5f;
@@ -392,7 +389,7 @@ namespace osu.Game.Overlays.BeatmapSet
             protected override bool OnHover(HoverEvent e)
             {
                 background.FadeTo(0.8f, 500, Easing.OutQuint);
-                ListPanel.Position = e.MousePosition;
+                ListPanel.Position = new Vector2(Position.X + Width * 2.5f, Position.Y + Height);
                 ListPanel.Show();
 
                 return base.OnHover(e);
