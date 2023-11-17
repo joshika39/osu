@@ -186,7 +186,7 @@ namespace osu.Game.Overlays.BeatmapSet
                             Details = new Details(),
                         },
                     },
-                    Picker.Favourites.ListPanel
+                    Picker.Favourites.ListPanel,
                 },
             };
 

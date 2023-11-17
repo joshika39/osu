@@ -9,9 +9,9 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
 using osu.Framework.Threading;
-using osu.Game.Graphics;
 using osu.Game.Graphics.Sprites;
 using osu.Game.Online.API.Requests.Responses;
+using osu.Game.Overlays;
 using osu.Game.Users.Drawables;
 using osuTK;
 
@@ -22,71 +22,13 @@ namespace osu.Game.Users
         #region Fields
 
         private ScheduledDelegate? popOutDelegate;
-        private bool isTargetHovered;
-
         private FillFlowContainer? usersList;
-
-        #endregion
-
-        #region Properties
-
-        public bool IsTargetHovered
-        {
-            get => isTargetHovered;
-            set
-            {
-                isTargetHovered = value;
-
-                if (!isTargetHovered)
-                {
-                    schedulePopOut();
-                }
-
-            }
-        }
 
         #endregion
 
         #region Public members
 
-        public void UpdateUsers(IReadOnlyCollection<APIUser> users)
-        {
-            var avatars = users.Select(u => new ClickableAvatar(u, showCardOnHover: true).With(avatar =>
-            {
-                avatar.Anchor = Anchor.TopLeft;
-                avatar.Origin = Anchor.TopLeft;
-                avatar.Size = new Vector2(30);
-                avatar.CornerRadius = 5;
-                avatar.Masking = true;
-            })).Take(50).ToArray();
-
-            var contents = new List<Drawable>();
-            contents.AddRange(avatars);
-
-            if (users.Count > 50)
-            {
-                contents.Add(new Container
-                {
-                    RelativeSizeAxes = Axes.X,
-                    AutoSizeAxes = Axes.Y,
-                    Child = new OsuSpriteText
-                    {
-                        Anchor = Anchor.TopRight,
-                        Origin = Anchor.TopRight,
-                        Margin = new MarginPadding
-                        {
-                            Right = 4
-                        },
-                        Text = $"+ {users.Count - 50}"
-                    }
-                });
-            }
-
-            if (usersList != null)
-            {
-                usersList.Children = contents;
-            }
-        }
+        public APIUser[] Users { set => setUsers(value); }
 
         #endregion
 
@@ -136,7 +78,7 @@ namespace osu.Game.Users
         #region Private members
 
         [BackgroundDependencyLoader]
-        private void load(OsuColour colours)
+        private void load(OverlayColourProvider colourProvider)
         {
             AutoSizeAxes = Axes.Both;
             AutoSizeDuration = 200;
@@ -151,12 +93,12 @@ namespace osu.Game.Users
                 {
                     RelativeSizeAxes = Axes.Both,
                     Alpha = 0.9f,
-                    Colour = colours.Gray3,
+                    Colour = colourProvider.Background6,
                 },
                 usersList = new FillFlowContainer
                 {
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
+                    Anchor = Anchor.TopLeft,
+                    Origin = Anchor.TopLeft,
                     AutoSizeAxes = Axes.Y,
                     Width = 300,
                     Direction = FillDirection.Full,
@@ -175,11 +117,50 @@ namespace osu.Game.Users
             popOutDelegate?.Cancel();
             this.Delay(1000).Schedule(() =>
             {
-                if (!IsHovered && !IsTargetHovered)
+                if (!IsHovered)
                 {
                     Hide();
                 }
             }, out popOutDelegate);
+        }
+
+        private void setUsers(APIUser[] users)
+        {
+            var avatars = users.Select(u => new ClickableAvatar(u, showCardOnHover: true).With(avatar =>
+            {
+                avatar.Anchor = Anchor.TopLeft;
+                avatar.Origin = Anchor.TopLeft;
+                avatar.Size = new Vector2(30);
+                avatar.CornerRadius = 5;
+                avatar.Masking = true;
+            })).Take(50).ToArray();
+
+            var contents = new List<Drawable>();
+            contents.AddRange(avatars);
+
+            if (users.Length > 50)
+            {
+                contents.Add(new Container
+                {
+                    RelativeSizeAxes = Axes.X,
+                    AutoSizeAxes = Axes.Y,
+                    Child = new OsuSpriteText
+                    {
+                        Anchor = Anchor.TopRight,
+                        Origin = Anchor.TopRight,
+                        Margin = new MarginPadding
+                        {
+                            Right = 4
+                        },
+                        Text = $"+ {users.Length - 50}"
+                    }
+                });
+            }
+
+            if (usersList != null)
+            {
+                usersList.Children = contents;
+            }
         }
 
         #endregion

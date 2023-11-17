@@ -349,16 +349,8 @@ namespace osu.Game.Overlays.BeatmapSet
 
         public partial class FavouriteStatisticHolder : Container
         {
-            public int FavouriteCount
-            {
-                set => favourites.Value = value;
-            }
-
-            public APIUser[] Users
-            {
-                set => ListPanel.UpdateUsers(value.ToList());
-            }
-
+            public int FavouriteCount { set => favourites.Value = value; }
+            public APIUser[] Users { set => ListPanel.Users = value; }
             public UserRecentFavouritedListPanel ListPanel { get; }
 
             private readonly Statistic favourites;
@@ -369,7 +361,10 @@ namespace osu.Game.Overlays.BeatmapSet
 
             public FavouriteStatisticHolder()
             {
-                ListPanel = new UserRecentFavouritedListPanel();
+                ListPanel = new UserRecentFavouritedListPanel()
+                {
+                    BypassAutoSizeAxes = Axes.Both,
+                };
                 Masking = true;
                 AutoSizeAxes = Axes.Both;
                 CornerRadius = 5f;
@@ -396,9 +391,8 @@ namespace osu.Game.Overlays.BeatmapSet
 
             protected override bool OnHover(HoverEvent e)
             {
-                ListPanel.IsTargetHovered = true;
                 background.FadeTo(0.8f, 500, Easing.OutQuint);
-                ListPanel.Position = new Vector2(Position.X + Width * 2.5f, Position.Y + Height);
+                ListPanel.Position = e.MousePosition;
                 ListPanel.Show();
 
                 return base.OnHover(e);
@@ -406,7 +400,6 @@ namespace osu.Game.Overlays.BeatmapSet
 
             protected override void OnHoverLost(HoverLostEvent e)
             {
-                ListPanel.IsTargetHovered = false;
                 background.FadeTo(0.3f, 500, Easing.OutQuint);
                 base.OnHoverLost(e);
             }
