@@ -32,6 +32,8 @@ namespace osu.Game.Screens.SelectV2
 
         private Live<BeatmapInfo> beatmap = null!;
 
+        private bool isOpen = false;
+
         [BackgroundDependencyLoader]
         private void load(OsuColour colour)
         {
@@ -40,13 +42,27 @@ namespace osu.Game.Screens.SelectV2
             AccentColour = colour.Purple1;
             Hotkey = GlobalAction.ToggleBeatmapOptions;
 
-            Action = this.ShowPopover;
+            Action = togglePopover;
         }
 
         protected override void LoadComplete()
         {
             base.LoadComplete();
             workingBeatmap.BindValueChanged(_ => beatmapChanged(), true);
+        }
+
+        private void togglePopover()
+        {
+            if (isOpen)
+            {
+                this.HidePopover();
+                isOpen = false;
+            }
+            else
+            {
+                this.ShowPopover();
+                isOpen = true;
+            }
         }
 
         private void beatmapChanged()
